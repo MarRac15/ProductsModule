@@ -4,7 +4,9 @@
 	<div class="row pt-4 pb-3">
 		<div class="col-6">
 			<h2>Category List</h2>
+
 		</div>
+
 		<div class="col-6 text-end">
 			<a asp-controller="Category" asp-action="Create" class="btn btn-primary">
 				Add new Category  <i class="bi bi-plus-circle-fill"></i>
@@ -33,7 +35,7 @@
 						</a>
 					</td>
 					<td>
-						<a asp-controller="Category" asp-action="Delete" class="btn btn-danger">
+						<a asp-controller="Category" asp-action="Delete" asp-route-id="@obj.CategoryId" class="btn btn-danger">
 							Delete  <i class="bi bi-trash"></i>
 						</a>
 					</td>

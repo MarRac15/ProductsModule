@@ -1,0 +1,23 @@
+﻿@*partial view for notifications on all the pages*@
+
+@if (TempData["success"] != null)
+{
+	<div class="container">
+		<div class="row pt-4 pb-3">
+			<div class="col-6">
+				<p class="text-success">@TempData["success"]</p>
+			</div>
+		</div>
+	</div>
+}
+
+@if (TempData["error"] != null)
+{
+	<div class="container">
+		<div class="row pt-4 pb-3">
+			<div class="col-6">
+				<p class="text-danger">@TempData["error"]</p>
+			</div>
+		</div>
+	</div>
+}

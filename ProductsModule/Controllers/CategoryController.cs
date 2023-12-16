@@ -30,18 +30,47 @@ namespace ProductsModule.Controllers
 			{
 				_db.Tb_Categories.Add(obj);
 				_db.SaveChanges();
+				TempData["success"] = "(Category successfully created!)";
 				return RedirectToAction("Index");
 			}
 			return View();
 
 		}
 
-		public IActionResult Delete()
+		public IActionResult Delete(int? id)
 		{
-			return View();
+			if (id == null || id == 0)
+			{
+				return NotFound();
+			}
+
+			Category? categoryFromDb = _db.Tb_Categories.FirstOrDefault(x => x.CategoryId == id);
+			if (categoryFromDb == null)
+			{
+				return NotFound();
+			}
+
+			return View(categoryFromDb);
 		}
 
-		//Delete POST method
+		
+		[HttpPost]
+		[ActionName("Delete")]
+		public IActionResult DeletePOST(int? id)
+		{
+			Category? obj = _db.Tb_Categories.Find(id);
+			if (obj==null)
+			{
+				return NotFound();
+			}
+
+			_db.Tb_Categories.Remove(obj);
+			_db.SaveChanges();
+			TempData["success"] = "(Category successfully deleted!)";
+			return RedirectToAction("Index");
+			
+		}
+
 
 
 		//GET
@@ -52,13 +81,13 @@ namespace ProductsModule.Controllers
 				return NotFound();
 			}
 
-			Category? category = _db.Tb_Categories.FirstOrDefault(x=>x.CategoryId==id);
-			if (category == null)
+			Category? categoryFromDb = _db.Tb_Categories.FirstOrDefault(x=>x.CategoryId==id);
+			if (categoryFromDb == null)
 			{
 				return NotFound();
 			}
 
-			return View(category);
+			return View(categoryFromDb);
 		}
 
 		[HttpPost]
