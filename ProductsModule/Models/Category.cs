@@ -8,6 +8,8 @@ namespace ProductsModule.Models
 		[Key]
 		public int CategoryId { get; set; }
 
+		[Required]
+		[MaxLength(30)]
 		public string Name { get; set; }
 
 		public bool IsDeleted { get; set; }
