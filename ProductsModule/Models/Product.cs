@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProductsModule.Models
@@ -11,9 +12,12 @@ namespace ProductsModule.Models
 		public bool IsDeleted { get; set; }
 
 		[Column(TypeName ="Date")]
+		[DisplayName("Creation date")]
 		public DateTime CreationDate { get; set; }
 
 		[MaxLength(300)]
 		public string ImageUrl { get; set; }
+
+		
     }
 }
