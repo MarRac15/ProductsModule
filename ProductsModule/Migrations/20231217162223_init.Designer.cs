@@ -12,8 +12,8 @@ using ProductsModule.Data;
 namespace ProductsModule.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231216233257_ProductInitial")]
-    partial class ProductInitial
+    [Migration("20231217162223_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace ProductsModule.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("CategoryProduct", b =>
+                {
+                    b.Property<int>("CategoriesCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoriesCategoryId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("ProductCategory", (string)null);
+                });
 
             modelBuilder.Entity("ProductsModule.Models.Category", b =>
                 {
@@ -43,7 +58,7 @@ namespace ProductsModule.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Tb_Categories");
+                    b.ToTable("Category");
 
                     b.HasData(
                         new
@@ -95,7 +110,7 @@ namespace ProductsModule.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tb_Products");
+                    b.ToTable("Product");
 
                     b.HasData(
                         new
@@ -125,6 +140,21 @@ namespace ProductsModule.Migrations
                             IsDeleted = false,
                             Title = "Ginger Bread"
                         });
+                });
+
+            modelBuilder.Entity("CategoryProduct", b =>
+                {
+                    b.HasOne("ProductsModule.Models.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProductsModule.Models.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

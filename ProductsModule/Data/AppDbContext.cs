@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using ProductsModule.Models;
 
 namespace ProductsModule.Data
@@ -10,8 +11,9 @@ namespace ProductsModule.Data
 
 		}
 
-		public DbSet<Category> Tb_Categories { get; set; }
-		public DbSet<Product> Tb_Products { get; set; }
+		public DbSet<Category> Category { get; set; }
+		public DbSet<Product> Product { get; set; }
+
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -52,8 +54,14 @@ namespace ProductsModule.Data
 				}
 				);
 
+			
+		
+			modelBuilder.Entity<Product>()
+				.HasMany(e => e.Categories)
+				.WithMany(e => e.Products)
+				.UsingEntity(j=>j.ToTable("ProductCategory"));
+		
 
-
-		}
-    }
+	}
+	}
 }

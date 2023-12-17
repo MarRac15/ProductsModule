@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ProductsModule.Data;
 using ProductsModule.Models;
 using System.ComponentModel;
@@ -16,12 +17,19 @@ namespace ProductsModule.Controllers
 		}
 		public IActionResult Index()
 		{
-			List<Product> objProductList = _db.Tb_Products.ToList();
+			List<Product> objProductList = _db.Product.ToList();
 			return View(objProductList);
 		}
 
 		public IActionResult Create()
 		{
+			IEnumerable<SelectListItem> CategoryList = _db.Category.ToList().Select(u => new SelectListItem
+			{
+				Text = u.Name,
+				Value = u.CategoryId.ToString()
+			});
+			ViewBag.CategoryList = CategoryList;
+
 			return View();
 		}
 
@@ -30,7 +38,7 @@ namespace ProductsModule.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				_db.Tb_Products.Add(obj);
+				_db.Product.Add(obj);
 				_db.SaveChanges();
 				TempData["success"] = "(Product successfully created!)";
 				return RedirectToAction("Index");
@@ -45,7 +53,7 @@ namespace ProductsModule.Controllers
 				return NotFound();
 			}
 
-			Product? productFromDb = _db.Tb_Products.FirstOrDefault(x => x.Id == id);
+			Product? productFromDb = _db.Product.FirstOrDefault(x => x.Id == id);
 			if (productFromDb == null)
 			{
 				return NotFound();
@@ -58,12 +66,12 @@ namespace ProductsModule.Controllers
 		[ActionName("Delete")]
 		public IActionResult DeletePOST(int? id)
 		{
-			Product? obj = _db.Tb_Products.Find(id);
+			Product? obj = _db.Product.Find(id);
 			if (obj==null)
 			{
 				return NotFound();
 			}
-			_db.Tb_Products.Remove(obj);
+			_db.Product.Remove(obj);
 			_db.SaveChanges();
 			TempData["success"] = "(Product successfully deleted!)";
 			return RedirectToAction("Index");
@@ -78,7 +86,7 @@ namespace ProductsModule.Controllers
 				return NotFound();
 			}
 
-			Product? productFromDb = _db.Tb_Products.Find(id);
+			Product? productFromDb = _db.Product.Find(id);
 			if (productFromDb == null)
 			{
 				return NotFound();
@@ -92,7 +100,7 @@ namespace ProductsModule.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				_db.Tb_Products.Update(obj);
+				_db.Product.Update(obj);
 				_db.SaveChanges();
 				return RedirectToAction("Index");
 			}
