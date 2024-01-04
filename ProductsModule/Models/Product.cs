@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,7 +18,7 @@ namespace ProductsModule.Models
 
 		[MaxLength(300)]
 		public string ImageUrl { get; set; }
-		public List<Category> Categories { get; } = new();
+		public ICollection<ProductCategory> Categories { get; set; }
 	}
 }
 

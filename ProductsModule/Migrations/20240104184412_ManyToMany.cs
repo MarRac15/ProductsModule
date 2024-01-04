@@ -8,13 +8,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProductsModule.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class ManyToMany : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Category",
+                name: "Categories",
                 columns: table => new
                 {
                     CategoryId = table.Column<int>(type: "int", nullable: false)
@@ -24,11 +24,11 @@ namespace ProductsModule.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Category", x => x.CategoryId);
+                    table.PrimaryKey("PK_Categories", x => x.CategoryId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Product",
+                name: "Products",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -41,35 +41,35 @@ namespace ProductsModule.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Product", x => x.Id);
+                    table.PrimaryKey("PK_Products", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "ProductCategory",
                 columns: table => new
                 {
-                    CategoriesCategoryId = table.Column<int>(type: "int", nullable: false),
-                    ProductsId = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    CategoryCategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductCategory", x => new { x.CategoriesCategoryId, x.ProductsId });
+                    table.PrimaryKey("PK_ProductCategory", x => new { x.ProductId, x.CategoryCategoryId });
                     table.ForeignKey(
-                        name: "FK_ProductCategory_Category_CategoriesCategoryId",
-                        column: x => x.CategoriesCategoryId,
-                        principalTable: "Category",
+                        name: "FK_ProductCategory_Categories_CategoryCategoryId",
+                        column: x => x.CategoryCategoryId,
+                        principalTable: "Categories",
                         principalColumn: "CategoryId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductCategory_Product_ProductsId",
-                        column: x => x.ProductsId,
-                        principalTable: "Product",
+                        name: "FK_ProductCategory_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
-                table: "Category",
+                table: "Categories",
                 columns: new[] { "CategoryId", "IsDeleted", "Name" },
                 values: new object[,]
                 {
@@ -79,7 +79,7 @@ namespace ProductsModule.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Product",
+                table: "Products",
                 columns: new[] { "Id", "CreationDate", "Description", "ImageUrl", "IsDeleted", "Title" },
                 values: new object[,]
                 {
@@ -89,9 +89,9 @@ namespace ProductsModule.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductCategory_ProductsId",
+                name: "IX_ProductCategory_CategoryCategoryId",
                 table: "ProductCategory",
-                column: "ProductsId");
+                column: "CategoryCategoryId");
         }
 
         /// <inheritdoc />
@@ -101,10 +101,10 @@ namespace ProductsModule.Migrations
                 name: "ProductCategory");
 
             migrationBuilder.DropTable(
-                name: "Category");
+                name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Product");
+                name: "Products");
         }
     }
 }

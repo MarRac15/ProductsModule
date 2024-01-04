@@ -11,13 +11,30 @@ namespace ProductsModule.Data
 
 		}
 
-		public DbSet<Category> Category { get; set; }
-		public DbSet<Product> Product { get; set; }
+		public DbSet<Category> Categories { get; set; }
+		public DbSet<Product> Products { get; set; }
+
+		public DbSet<ProductCategory> ProductCategories { get; set; }
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Category>().HasData(
+			modelBuilder.Entity<ProductCategory>()
+				.HasKey(pc => new { pc.ProductId, pc.CategoryCategoryId });
+
+			modelBuilder.Entity<ProductCategory>()
+				.HasOne(pc => pc.Product)
+				.WithMany(pc => pc.Categories)
+				.HasForeignKey(pc => pc.ProductId);
+
+			modelBuilder.Entity<ProductCategory>()
+				.HasOne(pc => pc.Category)
+				.WithMany(pc => pc.Products)
+				.HasForeignKey(pc => pc.CategoryCategoryId);
+
+
+
+			modelBuilder.Entity<Category>().HasData(
 				new Category { CategoryId = 1, Name = "Food", IsDeleted = false },
                 new Category { CategoryId = 2, Name = "Toys", IsDeleted = false },
                 new Category { CategoryId = 3, Name = "Tech", IsDeleted = false }
@@ -54,13 +71,6 @@ namespace ProductsModule.Data
 				}
 				);
 
-			
-		
-			modelBuilder.Entity<Product>()
-				.HasMany(e => e.Categories)
-				.WithMany(e => e.Products)
-				.UsingEntity(j=>j.ToTable("ProductCategory"));
-		
 
 	}
 	}

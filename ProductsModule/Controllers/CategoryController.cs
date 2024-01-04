@@ -13,7 +13,7 @@ namespace ProductsModule.Controllers
 		}
 		public IActionResult Index()
 		{
-			List<Category> objCategoryList = _db.Category.ToList();
+			List<Category> objCategoryList = _db.Categories.Where(b=>!b.IsDeleted).ToList();
 			return View(objCategoryList);
 		}
 
@@ -28,7 +28,7 @@ namespace ProductsModule.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				_db.Category.Add(obj);
+				_db.Categories.Add(obj);
 				_db.SaveChanges();
 				TempData["success"] = "(Category successfully created!)";
 				return RedirectToAction("Index");
@@ -44,7 +44,7 @@ namespace ProductsModule.Controllers
 				return NotFound();
 			}
 
-			Category? categoryFromDb = _db.Category.FirstOrDefault(x => x.CategoryId == id);
+			Category? categoryFromDb = _db.Categories.FirstOrDefault(x => x.CategoryId == id);
 			if (categoryFromDb == null)
 			{
 				return NotFound();
@@ -58,13 +58,13 @@ namespace ProductsModule.Controllers
 		[ActionName("Delete")]
 		public IActionResult DeletePOST(int? id)
 		{
-			Category? obj = _db.Category.Find(id);
+			Category? obj = _db.Categories.Find(id);
 			if (obj==null)
 			{
 				return NotFound();
 			}
 
-			_db.Category.Remove(obj);
+			obj.IsDeleted = true;
 			_db.SaveChanges();
 			TempData["success"] = "(Category successfully deleted!)";
 			return RedirectToAction("Index");
@@ -81,7 +81,7 @@ namespace ProductsModule.Controllers
 				return NotFound();
 			}
 
-			Category? categoryFromDb = _db.Category.FirstOrDefault(x=>x.CategoryId==id);
+			Category? categoryFromDb = _db.Categories.FirstOrDefault(x=>x.CategoryId==id);
 			if (categoryFromDb == null)
 			{
 				return NotFound();
@@ -95,7 +95,7 @@ namespace ProductsModule.Controllers
 		{
             if (ModelState.IsValid)
             {
-				_db.Category.Update(obj);
+				_db.Categories.Update(obj);
 				_db.SaveChanges();
 				return RedirectToAction("Index");
             }

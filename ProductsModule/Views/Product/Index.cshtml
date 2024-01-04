@@ -23,6 +23,7 @@
 				<th>Description</th>
 				<th>Creation Date</th>
 				<th>Image URL</th>
+				<th>Category</th>
 				
 			</tr>
 		</thead>
@@ -36,6 +37,13 @@
 					<td>@obj.Description</td>
 					<td>@obj.CreationDate</td>
 					<td>@obj.ImageUrl</td>
+					<td></td>
+					<td>
+						@foreach(var pc in obj.Categories)
+						{
+							@pc.CategoryCategoryId;
+						}
+					</td>
 					
 					<td>
 						<a asp-controller="Product" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary">

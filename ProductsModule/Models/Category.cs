@@ -13,6 +13,7 @@ namespace ProductsModule.Models
 		public string Name { get; set; }
 
 		public bool IsDeleted { get; set; }
-		public List<Product> Products { get; } = new();
+
+		public ICollection<ProductCategory> Products { get; set; }
 	}
 }

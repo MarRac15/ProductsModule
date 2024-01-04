@@ -33,6 +33,21 @@
 			<span asp-validation-for="ImageUrl" class="text-danger"></span>
 		</div>
 
+		<div class="row p-1">
+			
+			<div class="form-group">
+				
+				<select asp-for="Categories" asp-items="ViewBag.CategoryList" class="form-control" multiple>
+					<option disabled selected>Wybierz kategorię</option>
+				</select>
+
+				<span asp-validation-for="Categories" class="text-danger"></span>
+			</div>
+			
+			
+		</div>
+		
+
 
 		<div class="row pb-2 mt-4">
 
