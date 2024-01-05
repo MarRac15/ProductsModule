@@ -1,5 +1,4 @@
 ﻿@model List<Product>
-
 <div class="container">
 	<div class="row pt-4 pb-3">
 		<div class="col-6">
@@ -29,7 +28,7 @@
 		</thead>
 		<tbody>
 
-			@foreach (var obj in Model.OrderBy(o => o.Id))
+			@foreach (var obj in Model)
 			{
 				<tr>
 					<td>@obj.Id</td>
@@ -37,12 +36,11 @@
 					<td>@obj.Description</td>
 					<td>@obj.CreationDate</td>
 					<td>@obj.ImageUrl</td>
-					<td></td>
+					
 					<td>
-						@foreach(var pc in obj.Categories)
-						{
-							@pc.CategoryCategoryId;
-						}
+						
+						@Html.DisplayNameFor(c => obj.Categories)
+						
 					</td>
 					
 					<td>

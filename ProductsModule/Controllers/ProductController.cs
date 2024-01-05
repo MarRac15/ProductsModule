@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProductsModule.Data;
 using ProductsModule.Models;
+using ProductsModule.Models.ViewModels;
 using System.ComponentModel;
 
 namespace ProductsModule.Controllers
@@ -18,36 +19,50 @@ namespace ProductsModule.Controllers
 		}
 		public IActionResult Index()
 		{
-			List<Product> objProductList = _db.Products.Include(p => p.Categories).ThenInclude(p => p.Category).Where(b => !b.IsDeleted).ToList();
+			List<Product> objProductList = _db.Products.Where(b => !b.IsDeleted).ToList();
 			
+
 			return View(objProductList);
 		}
 
 		public IActionResult Create()
 		{
-			IEnumerable<SelectListItem> CategoryList = _db.Categories.ToList().Select(u => new SelectListItem
-			{
-				Text = u.Name,
-				Value = u.CategoryId.ToString()
-			});
-			ViewBag.CategoryList = CategoryList;
 
-			return View();
+			ProductVM productVM = new ProductVM()
+			{
+				CategoryList = _db.Categories.ToList().Select(u => new SelectListItem
+				{
+					Text = u.Name,
+					Value = u.CategoryId.ToString()
+				}),
+				Product = new Product()
+			};
+			return View(productVM);
 		}
 
 		[HttpPost]
-		public IActionResult Create(Product obj)
+		public IActionResult Create(ProductVM obj, int selectedCategoryId)
 		{
 			if (ModelState.IsValid)
 			{
-			
-				_db.Products.Add(obj);
+				var categoriesInfo = _db.Categories.SingleOrDefault(c => c.CategoryId == selectedCategoryId);
+
+				_db.Products.Add(obj.Product);
 				_db.SaveChanges();
 				TempData["success"] = "(Product successfully created!)";
 				return RedirectToAction("Index");
 			}
+			else
+			{
 
-			return View();
+				obj.CategoryList = _db.Categories.ToList().Select(u => new SelectListItem
+				{
+					Text = u.Name,
+					Value = u.CategoryId.ToString()
+				});
+
+				return View(obj);
+			}
 
 		}
 
