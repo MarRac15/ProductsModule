@@ -19,10 +19,25 @@ namespace ProductsModule.Controllers
 		}
 		public IActionResult Index()
 		{
-			List<Product> objProductList = _db.Products.Where(b => !b.IsDeleted).ToList();
-			
+			//List<Product> objProductList = _db.Products.Where(b => !b.IsDeleted).ToList();
+			//var productsWithCategories = _db.Products.Include(x => x.Categories).Where(x=>!x.IsDeleted).ToList();
 
-			return View(objProductList);
+			var productsWithCategories = _db.Products
+			.Include(p => p.Categories)
+			.Select(p => new ProductWithCategories
+			{
+				ProductId = p.Id,
+				ProductName = p.Title,
+				Description = p.Description,
+				ImageUrl = p.ImageUrl,
+				CreationDate = p.CreationDate,
+				IsDeleted = p.IsDeleted,
+				Categories = p.Categories.Select(c => c.Category).ToList()
+			})
+			.Where(b => !b.IsDeleted).ToList();
+
+
+			return View(productsWithCategories);
 		}
 
 		public IActionResult Create()
@@ -37,32 +52,41 @@ namespace ProductsModule.Controllers
 				}),
 				Product = new Product()
 			};
+			
 			return View(productVM);
 		}
 
 		[HttpPost]
-		public IActionResult Create(ProductVM obj, int selectedCategoryId)
+		public IActionResult Create(ProductVM obj)
 		{
 			if (ModelState.IsValid)
 			{
-				var categoriesInfo = _db.Categories.SingleOrDefault(c => c.CategoryId == selectedCategoryId);
+				if (obj.Product.SelectedCategoryId != null)
+				{
 
-				_db.Products.Add(obj.Product);
-				_db.SaveChanges();
-				TempData["success"] = "(Product successfully created!)";
-				return RedirectToAction("Index");
+					var selectedCategory = _db.Categories.Find(obj.Product.SelectedCategoryId);
+
+					obj.Product.Categories = new List<ProductCategory> { new ProductCategory { CategoryCategoryId = obj.Product.SelectedCategoryId, Category = selectedCategory } };
+
+
+					_db.Products.Add(obj.Product);
+					_db.SaveChanges();
+					TempData["success"] = "(Product successfully created!)";
+						
+					return RedirectToAction("Index");
+				}
 			}
-			else
-			{
+			
+			
 
-				obj.CategoryList = _db.Categories.ToList().Select(u => new SelectListItem
+				obj.CategoryList = _db.Categories.Select(u => new SelectListItem
 				{
 					Text = u.Name,
 					Value = u.CategoryId.ToString()
-				});
+				}).ToList();
 
 				return View(obj);
-			}
+			
 
 		}
 

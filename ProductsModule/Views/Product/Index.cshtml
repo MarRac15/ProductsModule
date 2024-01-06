@@ -1,4 +1,7 @@
-﻿@model List<Product>
+﻿@model List<ProductWithCategories>
+
+
+
 <div class="container">
 	<div class="row pt-4 pb-3">
 		<div class="col-6">
@@ -31,25 +34,27 @@
 			@foreach (var obj in Model)
 			{
 				<tr>
-					<td>@obj.Id</td>
-					<td>@obj.Title</td>
+					<td>@obj.ProductId</td>
+					<td>@obj.ProductName</td>
 					<td>@obj.Description</td>
 					<td>@obj.CreationDate</td>
 					<td>@obj.ImageUrl</td>
-					
 					<td>
-						
-						@Html.DisplayNameFor(c => obj.Categories)
-						
+						@foreach(var c in obj.Categories )
+						{
+							@c.Name
+						}
 					</td>
 					
+
+					
 					<td>
-						<a asp-controller="Product" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary">
+						<a asp-controller="Product" asp-action="Edit" asp-route-id="@obj.ProductId" class="btn btn-primary">
 							Edit <i class="bi bi-pencil"></i>
 						</a>
 					</td>
 					<td>
-						<a asp-controller="Product" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger">
+						<a asp-controller="Product" asp-action="Delete" asp-route-id="@obj.ProductId" class="btn btn-danger">
 							Delete  <i class="bi bi-trash"></i>
 						</a>
 					</td>

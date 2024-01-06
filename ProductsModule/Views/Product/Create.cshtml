@@ -37,13 +37,13 @@
 			
 			<div class="form-group">
 				
-				<select name="@Model.Product.Categories" asp-for="Product.Categories" asp-items="@Model.CategoryList" class="form-control" multiple>
+				<select asp-for="Product.SelectedCategoryId" asp-items="@Model.CategoryList" class="form-control">
 					<option disabled selected>Wybierz kategorię</option>
 				</select>
 
-				<span asp-validation-for="Product.Categories" class="text-danger"></span>
+				<span asp-validation-for="Product.SelectedCategoryId" class="text-danger"></span>
 			</div>
-			
+
 			
 		</div>
 		

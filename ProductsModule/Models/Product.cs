@@ -18,7 +18,9 @@ namespace ProductsModule.Models
 
 		[MaxLength(300)]
 		public string ImageUrl { get; set; }
-		public ICollection<ProductCategory> Categories { get; set; }
+		public ICollection<ProductCategory> Categories { get; set; } = new List<ProductCategory>();
+
+		public int SelectedCategoryId { get; set; }
 	}
 }
 
