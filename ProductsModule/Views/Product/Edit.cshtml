@@ -1,39 +1,50 @@
-﻿@model Product
+﻿@model ProductVM
 
 <form method="post">
-	<input asp-for="Id" hidden />
+	<input asp-for="Product.Id" hidden />
 	<div class="border p-3 mt-4">
 		<div class="row pb-2">
 			<h2 class="text-primary">Edit Product</h2>
 		</div>
 
 		<div class="row p-1">
-			<label asp-for="Title" class="p-0"></label>
+			<label asp-for="Product.Title" class="p-0"></label>
 
-			<input asp-for="Title" class="form-control" />
-			<span asp-validation-for="Title" class="text-danger"></span>
+			<input asp-for="Product.Title" class="form-control" />
+			<span asp-validation-for="Product.Title" class="text-danger"></span>
 		</div>
 
 		<div class="row p-1">
-			<label asp-for="Description" class="p-0"></label>
+			<label asp-for="Product.Description" class="p-0"></label>
 
-			<input asp-for="Description" class="form-control" />
-			<span asp-validation-for="Description" class="text-danger"></span>
+			<input asp-for="Product.Description" class="form-control" />
+			<span asp-validation-for="Product.Description" class="text-danger"></span>
 		</div>
 
 		<div class="row p-1">
-			<label asp-for="CreationDate" class="p-0"></label>
+			<label asp-for="Product.CreationDate" class="p-0"></label>
 
-			<input asp-for="CreationDate" class="form-control" />
-			<span asp-validation-for="CreationDate" class="text-danger"></span>
+			<input asp-for="Product.CreationDate" class="form-control" />
+			<span asp-validation-for="Product.CreationDate" class="text-danger"></span>
 		</div>
 
 		<div class="row p-1">
-			<label asp-for="ImageUrl" class="p-0"></label>
+			<label asp-for="Product.ImageUrl" class="p-0"></label>
 
-			<input asp-for="ImageUrl" class="form-control" />
-			<span asp-validation-for="ImageUrl" class="text-danger"></span>
+			<input asp-for="Product.ImageUrl" class="form-control" />
+			<span asp-validation-for="Product.ImageUrl" class="text-danger"></span>
 		</div>
+
+		<div class="row p-1">
+
+			<div class="form-group">
+
+				<select asp-for="Product.SelectedCategoryId" asp-items="@Model.CategoryList" class="form-control">
+					<option disabled selected>Wybierz kategorię</option>
+				</select>
+
+				<span asp-validation-for="Product.SelectedCategoryId" class="text-danger"></span>
+			</div>
 
 		<div class="row pb-2 mt-4">
 

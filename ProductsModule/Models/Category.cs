@@ -14,6 +14,6 @@ namespace ProductsModule.Models
 
 		public bool IsDeleted { get; set; }
 
-		public ICollection<ProductCategory> Products { get; set; }
+		public ICollection<ProductCategory> Products { get; set; } = new List<ProductCategory>();
 	}
 }

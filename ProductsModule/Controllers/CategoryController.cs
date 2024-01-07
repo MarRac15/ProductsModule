@@ -33,6 +33,14 @@ namespace ProductsModule.Controllers
 				TempData["success"] = "(Category successfully created!)";
 				return RedirectToAction("Index");
 			}
+
+			foreach (var modelState in ModelState.Values)
+			{
+				foreach (var error in modelState.Errors)
+				{
+					Console.WriteLine(error.ErrorMessage);
+				}
+			}
 			return View();
 
 		}

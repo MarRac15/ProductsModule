@@ -45,7 +45,7 @@ namespace ProductsModule.Controllers
 
 			ProductVM productVM = new ProductVM()
 			{
-				CategoryList = _db.Categories.ToList().Select(u => new SelectListItem
+				CategoryList = _db.Categories.Where(c=>!c.IsDeleted).ToList().Select(u => new SelectListItem
 				{
 					Text = u.Name,
 					Value = u.CategoryId.ToString()
@@ -77,8 +77,6 @@ namespace ProductsModule.Controllers
 				}
 			}
 			
-			
-
 				obj.CategoryList = _db.Categories.Select(u => new SelectListItem
 				{
 					Text = u.Name,
@@ -130,7 +128,16 @@ namespace ProductsModule.Controllers
 				return NotFound();
 			}
 
-			Product? productFromDb = _db.Products.Find(id);
+			//Product? productFromDb = _db.Products.Find(id);
+			ProductVM productFromDb = new ProductVM()
+			{
+				CategoryList = _db.Categories.Where(c => !c.IsDeleted).ToList().Select(u => new SelectListItem
+				{
+					Text = u.Name,
+					Value = u.CategoryId.ToString()
+				}),
+				Product = _db.Products.FirstOrDefault(p=>p.Id==id)
+			};
 			if (productFromDb == null)
 			{
 				return NotFound();
@@ -140,14 +147,34 @@ namespace ProductsModule.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Edit(Product obj)
+		public IActionResult Edit(ProductVM obj)
 		{
 			if (ModelState.IsValid)
 			{
-				_db.Products.Update(obj);
-				_db.SaveChanges();
-				return RedirectToAction("Index");
+				var existingProduct = _db.Products.Include(p => p.Categories).FirstOrDefault(p => p.Id == obj.Product.Id);
+
+				existingProduct.Categories.Clear();
+
+				if (obj.Product.SelectedCategoryId!=null) 
+				{
+					var selectedCategory = _db.Categories.Find(obj.Product.SelectedCategoryId);
+					existingProduct.Categories.Add(new ProductCategory { CategoryCategoryId = obj.Product.SelectedCategoryId, Category = selectedCategory });
+					existingProduct.Title=obj.Product.Title;
+					existingProduct.Description = obj.Product.Description;
+					existingProduct.ImageUrl = obj.Product.ImageUrl;
+					existingProduct.CreationDate = obj.Product.CreationDate;
+
+					
+					_db.SaveChanges();
+					return RedirectToAction("Index");
+				}
+				
 			}
+			obj.CategoryList = _db.Categories.Select(u => new SelectListItem
+			{
+				Text = u.Name,
+				Value = u.CategoryId.ToString()
+			}).ToList();
 			return View(obj);
 		}
 	}
