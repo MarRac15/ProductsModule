@@ -25,6 +25,7 @@
 				<th>Description</th>
 				<th>Creation Date</th>
 				<th>Image URL</th>
+				<th>Image</th>
 				<th>Category</th>
 				
 			</tr>
@@ -39,6 +40,9 @@
 					<td>@obj.Description</td>
 					<td>@obj.CreationDate</td>
 					<td>@obj.ImageUrl</td>
+					<td>
+						<img src="@obj.ImageUrl" width="100%" style="border-radius: 5px; border:1px solid thin"/>
+					</td>
 					<td>
 						@foreach(var c in obj.Categories )
 						{
