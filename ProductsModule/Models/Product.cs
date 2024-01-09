@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.Collections;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,6 +18,7 @@ namespace ProductsModule.Models
 		public DateTime CreationDate { get; set; }
 
 		[MaxLength(300)]
+		[ValidateNever]
 		public string ImageUrl { get; set; }
 		public ICollection<ProductCategory> Categories { get; set; } = new List<ProductCategory>();
 

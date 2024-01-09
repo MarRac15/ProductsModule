@@ -12,10 +12,12 @@ namespace ProductsModule.Controllers
 	public class ProductController : Controller
 	{
 		private readonly AppDbContext _db;
+		private readonly IWebHostEnvironment _webHostEnvironment;
 
-		public ProductController(AppDbContext db)
+		public ProductController(AppDbContext db, IWebHostEnvironment webHostEnvironment)
 		{
 			_db = db;
+			_webHostEnvironment = webHostEnvironment;
 		}
 		public IActionResult Index()
 		{
@@ -63,12 +65,26 @@ namespace ProductsModule.Controllers
 			{
 				if (obj.Product.SelectedCategoryId != null)
 				{
-
+					
 					var selectedCategory = _db.Categories.Find(obj.Product.SelectedCategoryId);
 
 					obj.Product.Categories = new List<ProductCategory> { new ProductCategory { CategoryCategoryId = obj.Product.SelectedCategoryId, Category = selectedCategory } };
 
+					
+					if (obj.ImageFile != null)
+					{
+						string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+						string fileName = Guid.NewGuid().ToString() + "_" + obj.ImageFile.FileName;
+						string filePath = Path.Combine(uploadFolder, fileName);
 
+						using (var fileStream = new FileStream(filePath, FileMode.Create))
+						{
+							obj.ImageFile.CopyTo(fileStream);
+						}
+
+						obj.Product.ImageUrl = "/images/" + fileName;
+					}
+					
 					_db.Products.Add(obj.Product);
 					_db.SaveChanges();
 					TempData["success"] = "(Product successfully created!)";
@@ -76,8 +92,19 @@ namespace ProductsModule.Controllers
 					return RedirectToAction("Index");
 				}
 			}
-			
-				obj.CategoryList = _db.Categories.Select(u => new SelectListItem
+			//jakby modelState był false to sprawdzam co jest nie tak:
+			foreach (var modelStateKey in ModelState.Keys)
+			{
+				var modelStateVal = ModelState[modelStateKey];
+				if (modelStateVal.Errors.Count > 0)
+				{
+					foreach (var error in modelStateVal.Errors)
+					{
+						Console.WriteLine($"Błąd walidacji dla {modelStateKey}: {error.ErrorMessage}");
+					}
+				}
+			}
+			obj.CategoryList = _db.Categories.Select(u => new SelectListItem
 				{
 					Text = u.Name,
 					Value = u.CategoryId.ToString()
@@ -158,6 +185,7 @@ namespace ProductsModule.Controllers
 				if (obj.Product.SelectedCategoryId!=null) 
 				{
 					var selectedCategory = _db.Categories.Find(obj.Product.SelectedCategoryId);
+
 					existingProduct.Categories.Add(new ProductCategory { CategoryCategoryId = obj.Product.SelectedCategoryId, Category = selectedCategory });
 					existingProduct.Title=obj.Product.Title;
 					existingProduct.Description = obj.Product.Description;
@@ -170,11 +198,13 @@ namespace ProductsModule.Controllers
 				}
 				
 			}
+
 			obj.CategoryList = _db.Categories.Select(u => new SelectListItem
 			{
 				Text = u.Name,
 				Value = u.CategoryId.ToString()
 			}).ToList();
+
 			return View(obj);
 		}
 	}
