@@ -189,9 +189,24 @@ namespace ProductsModule.Controllers
 					existingProduct.Categories.Add(new ProductCategory { CategoryCategoryId = obj.Product.SelectedCategoryId, Category = selectedCategory });
 					existingProduct.Title=obj.Product.Title;
 					existingProduct.Description = obj.Product.Description;
-					existingProduct.ImageUrl = obj.Product.ImageUrl;
+					
 					existingProduct.CreationDate = obj.Product.CreationDate;
 
+					if (obj.ImageFile != null)
+					{
+						string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+						string fileName = Guid.NewGuid().ToString() + "_" + obj.ImageFile.FileName;
+						string filePath = Path.Combine(uploadFolder, fileName);
+
+						using (var fileStream = new FileStream(filePath, FileMode.Create))
+						{
+							obj.ImageFile.CopyTo(fileStream);
+						}
+
+						obj.Product.ImageUrl = "/images/" + fileName;
+						existingProduct.ImageUrl = obj.Product.ImageUrl;
+
+					}
 					
 					_db.SaveChanges();
 					return RedirectToAction("Index");
@@ -199,7 +214,7 @@ namespace ProductsModule.Controllers
 				
 			}
 
-			obj.CategoryList = _db.Categories.Select(u => new SelectListItem
+			obj.CategoryList = _db.Categories.Where(c => !c.IsDeleted).Select(u => new SelectListItem
 			{
 				Text = u.Name,
 				Value = u.CategoryId.ToString()
