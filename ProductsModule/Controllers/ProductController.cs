@@ -19,7 +19,7 @@ namespace ProductsModule.Controllers
 			_db = db;
 			_webHostEnvironment = webHostEnvironment;
 		}
-		public IActionResult Index(string searchString)
+		public IActionResult Index(string searchString, int pageNumber)
 		{
 			ViewData["CurrentFilter"] = searchString;
 
@@ -43,10 +43,14 @@ namespace ProductsModule.Controllers
 			{
 				query = query.Where(p => p.ProductName.Contains(searchString));
 			}
+
+			//paging:
+			int pageSize = 3;
 			
+
 			var productsWithCategories = query.ToList();
 
-			return View(productsWithCategories);
+			return View(PageList<ProductWithCategories>.Create(productsWithCategories, pageNumber, pageSize));
 		}
 
 		public IActionResult Create()
