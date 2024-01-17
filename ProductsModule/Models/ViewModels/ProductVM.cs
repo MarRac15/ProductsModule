@@ -12,5 +12,7 @@ namespace ProductsModule.Models.ViewModels
         public IFormFile ImageFile { get; set; }
         [ValidateNever]
         public IEnumerable<SelectListItem> CategoryList { get; set; }
-    }
+
+
+	}
 }

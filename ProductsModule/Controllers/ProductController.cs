@@ -19,12 +19,11 @@ namespace ProductsModule.Controllers
 			_db = db;
 			_webHostEnvironment = webHostEnvironment;
 		}
-		public IActionResult Index()
+		public IActionResult Index(string searchString)
 		{
-			//List<Product> objProductList = _db.Products.Where(b => !b.IsDeleted).ToList();
-			//var productsWithCategories = _db.Products.Include(x => x.Categories).Where(x=>!x.IsDeleted).ToList();
+			ViewData["CurrentFilter"] = searchString;
 
-			var productsWithCategories = _db.Products
+			var query = _db.Products
 			.Include(p => p.Categories)
 			.Select(p => new ProductWithCategories
 			{
@@ -36,8 +35,16 @@ namespace ProductsModule.Controllers
 				IsDeleted = p.IsDeleted,
 				Categories = p.Categories.Select(c => c.Category).ToList()
 			})
-			.Where(b => !b.IsDeleted).ToList();
+			.Where(b => !b.IsDeleted);
 
+			//searching:
+			
+			if (!String.IsNullOrEmpty(searchString))
+			{
+				query = query.Where(p => p.ProductName.Contains(searchString));
+			}
+			
+			var productsWithCategories = query.ToList();
 
 			return View(productsWithCategories);
 		}
@@ -104,7 +111,7 @@ namespace ProductsModule.Controllers
 					}
 				}
 			}
-			obj.CategoryList = _db.Categories.Select(u => new SelectListItem
+			obj.CategoryList = _db.Categories.Where(c => !c.IsDeleted).Select(u => new SelectListItem
 				{
 					Text = u.Name,
 					Value = u.CategoryId.ToString()
@@ -155,22 +162,24 @@ namespace ProductsModule.Controllers
 				return NotFound();
 			}
 
-			//Product? productFromDb = _db.Products.Find(id);
-			ProductVM productFromDb = new ProductVM()
+			var existingProduct = _db.Products.Include(p => p.Categories).FirstOrDefault(p => p.Id == id);
+			ProductVM productVM = new ProductVM()
 			{
 				CategoryList = _db.Categories.Where(c => !c.IsDeleted).ToList().Select(u => new SelectListItem
 				{
 					Text = u.Name,
 					Value = u.CategoryId.ToString()
 				}),
-				Product = _db.Products.FirstOrDefault(p=>p.Id==id)
-			};
-			if (productFromDb == null)
+				Product = _db.Products.FirstOrDefault(p=>p.Id==id),
+		};
+			
+
+			if (productVM == null)
 			{
 				return NotFound();
 			}
 
-			return View(productFromDb);
+			return View(productVM);
 		}
 
 		[HttpPost]
