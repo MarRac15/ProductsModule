@@ -249,5 +249,32 @@ namespace ProductsModule.Controllers
 
         }
 
+		public IActionResult AddComment(int id) 
+		{
+			IEnumerable<SelectListItem> CommentList = _db.Products.Where(c => !c.IsDeleted).ToList().Select(u => new SelectListItem
+			{
+				Text = u.Title,
+				Value = u.Id.ToString()
+			});
+
+			ViewData["CommentList"] = CommentList;
+
+			return View();
+		}
+
+		[HttpPost]
+		public IActionResult AddComment(Comment obj, int ProductId)
+		{
+			var selectedProduct = _db.Products.FirstOrDefault(c => c.Id == ProductId);
+
+			obj.Product = selectedProduct;
+
+			_db.Comment.Add(obj);
+			_db.SaveChanges();
+			TempData["success"] = "(Comment successfully created!)";
+			return RedirectToAction("Index");
+
+		}
+
 	}
 }
