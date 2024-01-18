@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ProductsModule.Data;
 using ProductsModule.Models;
 
@@ -20,28 +21,63 @@ namespace ProductsModule.Controllers
 
 		public IActionResult Create()
 		{
+			IEnumerable<SelectListItem> CommentList = _db.Products.Where(c => !c.IsDeleted).ToList().Select(u => new SelectListItem
+			{
+				Text = u.Title,
+				Value = u.Id.ToString()
+			});
+
+			ViewData["CommentList"] = CommentList;
+
 			return View();
 		}
 
 		[HttpPost]
-		public IActionResult Create(Comment obj)
+		public IActionResult Create(Comment obj, int ProductId)
 		{
-			if (ModelState.IsValid)
+			var selectedProduct = _db.Products.FirstOrDefault(c=>c.Id == ProductId);
+			
+			obj.Product = selectedProduct;
+
+			_db.Comment.Add(obj);
+			_db.SaveChanges();
+			TempData["success"] = "(Comment successfully created!)";
+			return RedirectToAction("Index");
+
+		}
+
+
+		public IActionResult Delete(int? id)
+		{
+			if (id == null || id == 0)
 			{
-				_db.Comment.Add(obj);
-				_db.SaveChanges();
-				TempData["success"] = "(Comment successfully created!)";
-				return RedirectToAction("Index");
+				return NotFound();
 			}
 
-			foreach (var modelState in ModelState.Values)
+			Comment? commentFromDb = _db.Comment.FirstOrDefault(x => x.Id == id);
+			if (commentFromDb == null)
 			{
-				foreach (var error in modelState.Errors)
-				{
-					Console.WriteLine(error.ErrorMessage);
-				}
+				return NotFound();
 			}
-			return View();
+
+			return View(commentFromDb);
+		}
+
+
+		[HttpPost]
+		[ActionName("Delete")]
+		public IActionResult DeletePOST(int? id)
+		{
+			Comment? obj = _db.Comment.Find(id);
+			if (obj == null)
+			{
+				return NotFound();
+			}
+
+			obj.IsDeleted = true;
+			_db.SaveChanges();
+			TempData["success"] = "(Comment successfully deleted!)";
+			return RedirectToAction("Index");
 
 		}
 	}

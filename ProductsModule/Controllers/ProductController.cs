@@ -235,5 +235,16 @@ namespace ProductsModule.Controllers
 
 			return View(obj);
 		}
+
+		public IActionResult AddComment(int? id)
+		{
+			return View();
+		}
+
+		[HttpPost]
+		public IActionResult AddComment(Comment obj)
+		{
+			return View(obj);
+		}
 	}
 }

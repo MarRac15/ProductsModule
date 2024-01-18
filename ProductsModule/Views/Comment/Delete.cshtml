@@ -3,7 +3,7 @@
 <form method="post">
 	<div class="border p-3 mt-4">
 		<div class="row pb-2">
-			<h2 class="text-primary">Create Category</h2>
+			<h2 class="text-primary">Delete the comment</h2>
 		</div>
 		<div class="row p-1">
 			<label asp-for="Description" class="p-0"></label>
@@ -18,24 +18,10 @@
 			<span asp-validation-for="CreationDate" class="text-danger"></span>
 		</div>
 
-		<div class="row p-1">
-
-			<div class="form-group">
-
-				<select asp-for="ProductId" asp-items="@(ViewData["CommentList"] as IEnumerable<SelectListItem>)" class="form-control">
-					<option disabled selected>Który produkt oceniasz?</option>
-				</select>
-
-			</div>
-
-
-		</div>
-
-
 		<div class="row pb-2 mt-4">
 
 			<div class="col-2">
-				<button type="submit" class="btn btn-primary" style="width:150px">Create</button>
+				<button type="submit" class="btn btn-primary" asp-controller="Comment" asp-action="Delete" style="width:150px">Delete</button>
 			</div>
 
 			<div class="col-2">
