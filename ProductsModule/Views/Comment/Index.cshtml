@@ -1,0 +1,49 @@
+﻿@model List<Comment>
+
+<div class="container">
+	<div class="row pt-4 pb-3">
+		<div class="col-6">
+			<h2>List of all comments</h2>
+
+		</div>
+
+		<div class="col-6 text-end">
+			<a asp-controller="Comment" asp-action="Create" class="btn btn-primary">
+				Add new Comment  <i class="bi bi-plus-circle-fill"></i>
+			</a>
+		</div>
+
+	</div>
+
+	<table class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<th>Description</th>
+				<th>Comment Id</th>
+			</tr>
+		</thead>
+		<tbody>
+
+			@foreach (var obj in Model.OrderBy(o => o.Id))
+			{
+				<tr>
+					<td>@obj.Description</td>
+					<td>@obj.Id</td>
+					<td>
+						<a asp-controller="Comment" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary">
+							Edit <i class="bi bi-pencil"></i>
+						</a>
+					</td>
+					<td>
+						<a asp-controller="Comment" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger">
+							Delete  <i class="bi bi-trash"></i>
+						</a>
+					</td>
+				</tr>
+
+			}
+
+		</tbody>
+	</table>
+
+</div>

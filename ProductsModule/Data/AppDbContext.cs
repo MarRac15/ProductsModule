@@ -13,7 +13,7 @@ namespace ProductsModule.Data
 
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<Product> Products { get; set; }
-		
+		public DbSet<Comment> Comment { get; set; }
 
 		public DbSet<ProductCategory> ProductCategories { get; set; }
 
@@ -33,7 +33,22 @@ namespace ProductsModule.Data
 				.WithMany(pc => pc.Products)
 				.HasForeignKey(pc => pc.CategoryCategoryId);
 
+			
+			modelBuilder.Entity<Comment>()
+				.Property(e => e.CreationDate).HasColumnType("date");
 
+			modelBuilder.Entity<Comment>()
+				.HasOne(c=>c.Product)
+				.WithMany(p=>p.Comments)
+				.HasForeignKey(p => p.ProductId)
+				.IsRequired();
+
+			modelBuilder.Entity<Comment>().HasData(
+				new Comment { Id = 1, Description = "cool", CreationDate = new DateTime(), IsDeleted = false, ProductId=2 },
+				new Comment { Id = 2, Description = "great book", CreationDate = new DateTime(), IsDeleted = false, ProductId=1 },
+				new Comment { Id = 3, Description = "not so great, wouldnt recommend", CreationDate = new DateTime(), IsDeleted = false, ProductId=3 }
+				);
+			
 
 			modelBuilder.Entity<Category>().HasData(
 				new Category { CategoryId = 1, Name = "Food", IsDeleted = false },

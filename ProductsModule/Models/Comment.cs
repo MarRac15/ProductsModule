@@ -9,7 +9,9 @@ namespace ProductsModule.Models
 		public DateTime CreationDate { get; set; }
 		public bool IsDeleted { get; set; }
 
-		
+
 		public int ProductId { get; set; }
+		public Product Product { get; set; } = null!;
+
 	}
 }

@@ -12,8 +12,8 @@ using ProductsModule.Data;
 namespace ProductsModule.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240104184412_ManyToMany")]
-    partial class ManyToMany
+    [Migration("20240118140642_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,6 +66,60 @@ namespace ProductsModule.Migrations
                         });
                 });
 
+            modelBuilder.Entity("ProductsModule.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Comment");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "cool",
+                            IsDeleted = false,
+                            ProductId = 2
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "great book",
+                            IsDeleted = false,
+                            ProductId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "not so great, wouldnt recommend",
+                            IsDeleted = false,
+                            ProductId = 3
+                        });
+                });
+
             modelBuilder.Entity("ProductsModule.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -89,6 +143,9 @@ namespace ProductsModule.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<int>("SelectedCategoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -105,6 +162,7 @@ namespace ProductsModule.Migrations
                             Description = "epic book",
                             ImageUrl = "",
                             IsDeleted = false,
+                            SelectedCategoryId = 0,
                             Title = "The Witcher"
                         },
                         new
@@ -114,6 +172,7 @@ namespace ProductsModule.Migrations
                             Description = "tasty drink",
                             ImageUrl = "",
                             IsDeleted = false,
+                            SelectedCategoryId = 0,
                             Title = "Fanta"
                         },
                         new
@@ -123,6 +182,7 @@ namespace ProductsModule.Migrations
                             Description = "Kopernik's finest biscuits",
                             ImageUrl = "",
                             IsDeleted = false,
+                            SelectedCategoryId = 0,
                             Title = "Ginger Bread"
                         });
                 });
@@ -139,7 +199,18 @@ namespace ProductsModule.Migrations
 
                     b.HasIndex("CategoryCategoryId");
 
-                    b.ToTable("ProductCategory");
+                    b.ToTable("ProductCategories");
+                });
+
+            modelBuilder.Entity("ProductsModule.Models.Comment", b =>
+                {
+                    b.HasOne("ProductsModule.Models.Product", "Product")
+                        .WithMany("Comments")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("ProductsModule.Models.ProductCategory", b =>
@@ -169,6 +240,8 @@ namespace ProductsModule.Migrations
             modelBuilder.Entity("ProductsModule.Models.Product", b =>
                 {
                     b.Navigation("Categories");
+
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }
