@@ -80,5 +80,37 @@ namespace ProductsModule.Controllers
 			return RedirectToAction("Index");
 
 		}
+
+		public IActionResult Edit(int? id)
+		{
+			if (id == null || id == 0)
+			{
+				return NotFound();
+			}
+
+			Comment? commentFromDb = _db.Comment.FirstOrDefault(x => x.Id == id);
+			if (commentFromDb == null)
+			{
+				return NotFound();
+			}
+
+			return View(commentFromDb);
+		}
+
+		[HttpPost]
+		public IActionResult Edit(Comment obj, int ProductId)
+		{
+			var selectedProduct = _db.Products.FirstOrDefault(c => c.Id == ProductId);
+
+			obj.Product = selectedProduct;
+
+			_db.Comment.Update(obj);
+			_db.SaveChanges();
+			
+			return RedirectToAction("Index");
+
+		}
+
+
 	}
 }

@@ -34,9 +34,7 @@
 			<tr>
 				<th>Id</th>
 				<th>Title</th>
-				<th>Description</th>
 				<th>Creation Date</th>
-				<th>Image URL</th>
 				<th>Image</th>
 				<th>Category</th>
 				
@@ -46,14 +44,12 @@
 
 			@foreach (var obj in Model)
 			{
-				<tr>
+				<tr style="height: 100px">
 					<td>@obj.ProductId</td>
 					<td>@obj.ProductName</td>
-					<td>@obj.Description</td>
 					<td>@obj.CreationDate</td>
-					<td>@obj.ImageUrl</td>
 					<td>
-						<img src="@obj.ImageUrl" width="100%" style="border-radius: 5px; border:1px solid thin"/>
+						<img src="@obj.ImageUrl" width="40%" style="border-radius: 5px; border:1px solid thin; margin-left:auto;"/>
 					</td>
 					<td>
 						@foreach(var c in obj.Categories )
@@ -72,6 +68,11 @@
 					<td>
 						<a asp-controller="Product" asp-action="Delete" asp-route-id="@obj.ProductId" class="btn btn-danger">
 							Delete  <i class="bi bi-trash"></i>
+						</a>
+					</td>
+					<td>
+						<a asp-controller="Product" asp-action="Details" asp-route-id="@obj.ProductId" class="btn btn-primary">
+							Details <i class="bi bi-three-dots"></i>
 						</a>
 					</td>
 				</tr>

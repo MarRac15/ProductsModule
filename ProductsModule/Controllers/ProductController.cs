@@ -236,15 +236,18 @@ namespace ProductsModule.Controllers
 			return View(obj);
 		}
 
-		public IActionResult AddComment(int? id)
+		public IActionResult Details(int id)
 		{
-			return View();
-		}
+			var productWithComments = _db.Products.Include(p=>p.Comments.Where(p => !p.IsDeleted)).FirstOrDefault(p=>p.Id == id);
 
-		[HttpPost]
-		public IActionResult AddComment(Comment obj)
-		{
-			return View(obj);
-		}
+            if (productWithComments == null)
+			{
+				return NotFound();
+			}
+            
+			return View(productWithComments);
+
+        }
+
 	}
 }
